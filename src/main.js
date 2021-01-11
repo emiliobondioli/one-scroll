@@ -19,7 +19,7 @@ function average(array, take) {
   return sum / take;
 }
 
-export default class One {
+export class One {
   constructor(el, options = {}) {
     this.options = { ...defaultOptions, ...options };
     this.deltas = [];
