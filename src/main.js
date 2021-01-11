@@ -1,4 +1,4 @@
-import normalizeWheel from "./normalize-wheel";
+import normalizeWheel from "./vendor/normalize-wheel";
 
 const defaultOptions = {
   samples: 150,
