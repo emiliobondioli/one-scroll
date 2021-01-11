@@ -20,7 +20,6 @@ const one = new One(el, {
   dragThreshold: 8,     // drag distance to detect a trouch scroll event
   deltaThreshold: 0.5,  // threshold below which the event is considered inertial
   minDelta: 0.01,       // min delta to detect scroll events
-  triggerOnly: false,   // don't emit events detected as inertial
   resetTime: 200,       // ms to reset scroll data, after this timeout following events will be treated as a different scroll action
 });
 ```

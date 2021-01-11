@@ -1,6 +1,6 @@
 {
-  "name": "one-scroll",
-  "version": "1.0.0",
+  "name": "@ebondioli/one-scroll",
+  "version": "0.0.1",
   "main": "dist/one-scroll.cjs.js",
   "module": "dist/one-scroll.esm.js",
   "browser": "dist/one-scroll.umd.js",
@@ -18,5 +18,22 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "description": "One scroll aims to normalize scroll events between different browsers and input devices and identify whether the event was triggered by the user or by the OS momentum scroll.",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emiliobondioli/one-scroll.git"
+  },
+  "keywords": [
+    "scroll"
+  ],
+  "author": "Emilio Bondioli",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/emiliobondioli/one-scroll/issues"
+  },
+  "homepage": "https://github.com/emiliobondioli/one-scroll#readme"
 }

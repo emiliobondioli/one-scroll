@@ -4,9 +4,7 @@ const defaultOptions = {
   samples: 150,
   dragThreshold: 8,
   deltaThreshold: 0.5,
-  minDelta: 0.01,
-  triggerOnly: false,
-  resetTime: 200
+  resetTime: 300,
 };
 
 function average(array, take) {
@@ -56,13 +54,13 @@ export class One {
   }
 
   handleTouch(e) {
-    this.offsetMobile = touchStart - e.touches[0].clientY;
-    e.deltaY = e.wheelDelta = Math.sign(offsetMobile) * -2;
-    if (Math.abs(offsetMobile) > this.options.dragThreshold)
-      return handleScroll(e);
+    this.offsetMobile = this.touchStart - e.touches[0].clientY;
+    e.deltaY = e.wheelDelta = Math.sign(this.offsetMobile) * -2;
+    if (Math.abs(this.offsetMobile) > this.options.dragThreshold)
+      return this.handleScroll(e, true);
   }
 
-  handleScroll(e) {
+  handleScroll(e, touch) {
     const wheel = normalizeWheel(e);
     const delta = Math.abs(wheel.spinY);
     const currentScrollTime = new Date().getTime();
@@ -70,29 +68,37 @@ export class One {
       this.deltas = [];
       this.offsetMobile = 0;
       this.scrollId++;
+      this.target = null;
     }
+    if (!this.target) this.target = e.target;
     this.lastScrollTime = currentScrollTime;
-    if (delta < this.options.minDelta) return false;
     if (this.deltas.length >= this.options.samples) this.deltas.shift();
     this.deltas.push(delta);
     const acc = this.computeAvg();
     const direction = Math.sign(wheel.spinY);
-    if (!this.options.triggerOnly || !acc.inertial) {
-      e.one = {
-        delta,
-        direction,
-        deltas: this.deltas,
-        ...acc,
-        id: this.scrollId,
-        timestamp: e.timeStamp
-      };
-      this.callbacks.forEach((c) => c(e));
-    }
+    e.one = {
+      delta,
+      direction,
+      deltas: this.deltas,
+      ...acc,
+      id: this.scrollId,
+      timestamp: e.timeStamp,
+      target: this.target,
+    };
+    this.callbacks
+      .filter(
+        (c) =>
+          c.type === "*" ||
+          (touch && c.type === "touch") ||
+          (!touch && c.type === "wheel")
+      )
+      .forEach((c) => c.callback(e));
+    return false;
   }
 
   computeAvg() {
-    const averageEnd = average(this.deltas, this.options.samples/10);
-    const averageMiddle = average(this.deltas, this.options.samples/2);
+    const averageEnd = average(this.deltas, this.options.samples / 10);
+    const averageMiddle = average(this.deltas, this.options.samples / 2);
     const offset = averageEnd - averageMiddle;
     const inertial = offset < this.options.deltaThreshold;
     return {
@@ -103,11 +109,11 @@ export class One {
     };
   }
 
-  addEventListener(callback) {
-    this.callbacks.push(callback);
+  addEventListener(type, callback) {
+    this.callbacks.push({ type, callback });
   }
 
-  removeEventListener(callback) {
+  removeEventListener(type, callback = null) {
     const idx = this.callbacks.indexOf(callback);
     this.callbacks.splice(idx, 1);
   }
