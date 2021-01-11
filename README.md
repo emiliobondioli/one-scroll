@@ -1,45 +1,49 @@
-# rollup-starter-lib
+# one-scroll
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/rollup/rollup-starter-lib.svg)](https://greenkeeper.io/)
+One scroll aims to normalize scroll events between different browsers and input devices and identify whether the event was triggered by the user or by the OS momentum scroll.
 
-This repo contains a bare-bones example of how to create a library using Rollup, including importing a module from `node_modules` and converting it from CommonJS.
+## Installation
 
-We're creating a library called `how-long-till-lunch`, which usefully tells us how long we have to wait until lunch, using the [ms](https://github.com/zeit/ms) package:
-
-```js
-console.log('it will be lunchtime in ' + howLongTillLunch());
+```
+npm install --save one-scroll
 ```
 
 ## Getting started
 
-Clone this repository and install its dependencies:
-
-```bash
-git clone https://github.com/rollup/rollup-starter-lib
-cd rollup-starter-lib
-npm install
+To create a new `one` instance:
+```js
+import One from 'one-scroll';
+const el = document.getElementById('target-el');
+const one = new One(el, {
+  // default option values
+  samples: 150,         // total samples used for momentum scroll detection
+  dragThreshold: 8,     // drag distance to detect a trouch scroll event
+  deltaThreshold: 0.5,  // threshold below which the event is considered inertial
+  minDelta: 0.01,       // min delta to detect scroll events
+  triggerOnly: false,   // don't emit events detected as inertial
+  resetTime: 200,       // ms to reset scroll data, after this timeout following events will be treated as a different scroll action
+});
 ```
-
-`npm run build` builds the library to `dist`, generating three files:
-
-* `dist/how-long-till-lunch.cjs.js`
-    A CommonJS bundle, suitable for use in Node.js, that `require`s the external dependency. This corresponds to the `"main"` field in package.json
-* `dist/how-long-till-lunch.esm.js`
-    an ES module bundle, suitable for use in other people's libraries and applications, that `import`s the external dependency. This corresponds to the `"module"` field in package.json
-* `dist/how-long-till-lunch.umd.js`
-    a UMD build, suitable for use in any environment (including the browser, as a `<script>` tag), that includes the external dependency. This corresponds to the `"browser"` field in package.json
-
-`npm run dev` builds the library, then keeps rebuilding it whenever the source files change using [rollup-watch](https://github.com/rollup/rollup-watch).
-
-`npm test` builds the library, then tests it.
-
-## Variations
-
-* [babel](https://github.com/rollup/rollup-starter-lib/tree/babel) — illustrates writing the source code in ES2015 and transpiling it for older environments with [Babel](https://babeljs.io/)
-* [buble](https://github.com/rollup/rollup-starter-lib/tree/buble) — similar, but using [Bublé](https://buble.surge.sh/) which is a faster alternative with less configuration
-* [TypeScript](https://github.com/rollup/rollup-starter-lib/tree/typescript) — uses [TypeScript](https://www.typescriptlang.org/) for type-safe code and transpiling
-
-
+You can then attach an event listener to the instance:
+```js
+one.addEventListener((e) => {
+    // do something
+})
+```
+The event being passed to the callback contains an additional property `one`:
+```js
+e.one = {
+    averageEnd: 0.208       // average delta of the last 10% of the samples
+    averageMiddle: 0.425    // average delta of the last 50% of the samples
+    offset: -0.217          // (averageEnd - averageMiddle) used to detect inertial events
+    delta: 0.15             // delta of the current event
+    deltas: []              // all registered deltas for current scroll event
+    direction: 1            // normalized scroll direction (+/- 1)
+    id: 1                   // id of the current scroll action
+    inertial: true          // wether the event is user-triggered or inertial
+    timestamp: 1974.03      // timestamp of the scroll event
+}
+```
 
 ## License
 

@@ -6,6 +6,7 @@ const defaultOptions = {
   deltaThreshold: 0.5,
   minDelta: 0.01,
   triggerOnly: false,
+  resetTime: 200
 };
 
 function average(array, take) {
@@ -65,7 +66,7 @@ export default class One {
     const wheel = normalizeWheel(e);
     const delta = Math.abs(wheel.spinY);
     const currentScrollTime = new Date().getTime();
-    if (currentScrollTime - this.lastScrollTime > 200) {
+    if (currentScrollTime - this.lastScrollTime > this.options.resetTime) {
       this.deltas = [];
       this.offsetMobile = 0;
       this.scrollId++;
