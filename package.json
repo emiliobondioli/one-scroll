@@ -1,16 +1,14 @@
 {
-  "name": "rollup-starter-lib",
+  "name": "one-scroll",
   "version": "1.0.0",
-  "main": "dist/how-long-till-lunch.cjs.js",
-  "module": "dist/how-long-till-lunch.esm.js",
-  "browser": "dist/how-long-till-lunch.umd.js",
-  "dependencies": {
-    "ms": "^2.0.0"
-  },
+  "main": "dist/one-scroll.cjs.js",
+  "module": "dist/one-scroll.esm.js",
+  "browser": "dist/one-scroll.umd.js",
+  "dependencies": {},
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^11.0.1",
-    "@rollup/plugin-node-resolve": "^7.0.0",
-    "rollup": "^1.29.0"
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-node-resolve": "^11.0.1",
+    "rollup": "^2.36.0"
   },
   "scripts": {
     "build": "rollup -c",
