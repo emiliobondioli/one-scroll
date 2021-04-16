@@ -82,8 +82,11 @@ export class One {
       this.offsetMobile = 0;
       this.scrollId++;
       this.target = null;
-      if(this.lastScrollTime !== 0) this.endScroll(e)
     }
+    if (this.resetTimeout) clearTimeout(this.resetTimeout);
+    this.resetTimeout = setTimeout(() => {
+      this.endScroll(e);
+    }, 50);
     if (!this.target) this.target = e.target;
     this.lastScrollTime = currentScrollTime;
     if (this.deltas.length >= this.options.samples) this.deltas.shift();
