@@ -41,6 +41,11 @@ export class One {
       passive: false,
       cancelable: true,
     });
+    this.boundEndScroll = this.endScroll.bind(this);
+    this.el.addEventListener("mousedown", (e) => {
+      document.body.addEventListener("mouseup", this.boundEndScroll);
+      this.emitStart(e);
+    });
   }
 
   removeListeners() {
@@ -51,6 +56,14 @@ export class One {
 
   startTouch(e) {
     this.touchStart = e.touches[0].clientY;
+    document.body.addEventListener("touchend", this.boundEndScroll);
+    this.emitStart(e);
+  }
+
+  emitStart(e) {
+    this.callbacks
+      .filter((c) => c.type === "start")
+      .forEach((c) => c.callback(e));
   }
 
   handleTouch(e) {
@@ -94,6 +107,14 @@ export class One {
       )
       .forEach((c) => c.callback(e));
     return false;
+  }
+
+  endScroll(e) {
+    document.body.removeEventListener("mouseup", this.boundEndScroll);
+    document.body.removeEventListener("touchend", this.boundEndScroll);
+    this.callbacks
+      .filter((c) => c.type === "end")
+      .forEach((c) => c.callback(e));
   }
 
   computeAvg() {
