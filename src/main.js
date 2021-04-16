@@ -82,7 +82,7 @@ export class One {
       this.offsetMobile = 0;
       this.scrollId++;
       this.target = null;
-      this.endScroll(e)
+      if(this.lastScrollTime !== 0) this.endScroll(e)
     }
     if (!this.target) this.target = e.target;
     this.lastScrollTime = currentScrollTime;
