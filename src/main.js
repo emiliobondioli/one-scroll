@@ -88,11 +88,16 @@ export class One {
       this.deltas.length > 1 &&
       Math.abs(delta - this.deltas[this.deltas.length - 1]) >
         this.options.deltaThreshold
-    )
+    ) {
       this.reset();
-    else if (currentScrollTime - this.lastScrollTime > this.options.resetTime) {
+      this.endScroll(e);
+    } else if (
+      currentScrollTime - this.lastScrollTime >
+      this.options.resetTime
+    ) {
       this.reset();
     }
+
     if (this.resetTimeout) clearTimeout(this.resetTimeout);
     this.resetTimeout = setTimeout(() => {
       this.endScroll(e);
