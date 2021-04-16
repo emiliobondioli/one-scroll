@@ -80,28 +80,40 @@ export class One {
     this.target = null;
   }
 
+  debounceResetScroll(e) {
+    if (this.resetTimeout) clearTimeout(this.resetTimeout);
+    this.resetTimeout = setTimeout(() => {
+      this.callbacks
+        .filter((c) => c.type === "reset")
+        .forEach((c) => c.callback(e));
+    }, 50);
+  }
+
+  debounceEndScroll(e) {
+    if (this.endTimeout) clearTimeout(this.endTimeout);
+    this.endTimeout = setTimeout(() => {
+      this.endScroll(e);
+    }, 50);
+  }
+
   handleScroll(e, touch) {
     const wheel = normalizeWheel(e);
     const delta = Math.abs(wheel.spinY);
     const currentScrollTime = new Date().getTime();
-    if (
-      this.deltas.length > 1 &&
-      Math.abs(delta - this.deltas[this.deltas.length - 1]) >
-        this.options.deltaThreshold
-    ) {
+    let shift = 0;
+    if (this.deltas.length) {
+      shift = Math.abs(delta - this.deltas[this.deltas.length - 1]);
+    }
+    if (shift > this.options.deltaThreshold) {
       this.reset();
-      this.endScroll(e);
+      this.debounceResetScroll(e);
     } else if (
       currentScrollTime - this.lastScrollTime >
       this.options.resetTime
     ) {
       this.reset();
     }
-
-    if (this.resetTimeout) clearTimeout(this.resetTimeout);
-    this.resetTimeout = setTimeout(() => {
-      this.endScroll(e);
-    }, 50);
+    this.debounceEndScroll(e);
     if (!this.target) this.target = e.target;
     this.lastScrollTime = currentScrollTime;
     if (this.deltas.length >= this.options.samples) this.deltas.shift();
