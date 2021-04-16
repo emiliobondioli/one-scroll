@@ -162,7 +162,9 @@ export class One {
   }
 
   addEventListener(type, callback) {
-    this.callbacks.push({ type, callback });
+    type.split(' ').forEach(t => {
+      this.callbacks.push({ type: t, callback });
+    });
   }
 
   removeEventListener(type, callback = null) {
