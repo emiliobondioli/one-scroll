@@ -1,6 +1,6 @@
 {
   "name": "@ebondioli/one-scroll",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "dist/one-scroll.cjs.js",
   "module": "dist/one-scroll.esm.js",
   "browser": "dist/one-scroll.umd.js",
