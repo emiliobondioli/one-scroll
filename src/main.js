@@ -73,15 +73,25 @@ export class One {
       return this.handleScroll(e, true);
   }
 
+  reset() {
+    this.deltas = [];
+    this.offsetMobile = 0;
+    this.scrollId++;
+    this.target = null;
+  }
+
   handleScroll(e, touch) {
     const wheel = normalizeWheel(e);
     const delta = Math.abs(wheel.spinY);
     const currentScrollTime = new Date().getTime();
-    if (currentScrollTime - this.lastScrollTime > this.options.resetTime) {
-      this.deltas = [];
-      this.offsetMobile = 0;
-      this.scrollId++;
-      this.target = null;
+    if (
+      this.deltas.length > 1 &&
+      Math.abs(delta - this.deltas[this.deltas.length - 1]) >
+        this.options.deltaThreshold
+    )
+      this.reset();
+    else if (currentScrollTime - this.lastScrollTime > this.options.resetTime) {
+      this.reset();
     }
     if (this.resetTimeout) clearTimeout(this.resetTimeout);
     this.resetTimeout = setTimeout(() => {
